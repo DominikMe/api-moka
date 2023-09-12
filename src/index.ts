@@ -85,11 +85,64 @@ const generateRoutes = (openApi: OpenApi): string[] => {
 
 const generateRoute = (path: string, method: string, route: any): string => {
   const expressPath = path.replaceAll("{", ":").replaceAll("}", "");
+  const response = generateResponse(route);
   return `app.${method}("${expressPath}", (req, res) => {
-        res.send({ msg: "${Buffer.from(
-          Math.random().toString().substring(2, 6),
-        ).toString("base64")}"});
+        res.status(${response.status}).send(${JSON.stringify(
+          response.body,
+          null,
+          2,
+        )
+          .replace(/\"([^(\")"]+)\":/g, "$1:")
+          .replaceAll("\n", "\n        ")});
     });`;
+};
+
+const generateResponse = (route: any) => {
+  const firstStatusCode = Object.keys(route.responses)[0];
+  const firstReply = route.responses[firstStatusCode];
+  let body = {};
+  if (firstReply.schema) {
+    body = generateResponsePayload(firstReply.schema);
+  }
+  return {
+    status: firstStatusCode,
+    body,
+    headers: {},
+  };
+};
+
+const generateResponsePayload = (definition: any) => {
+  let payload = {} as any;
+  switch (definition.type) {
+    case "object":
+      for (let prop in definition.properties) {
+        payload[prop] = generateResponsePayload(definition.properties[prop]);
+      }
+      break;
+    case "string":
+      if (definition.format === "date-time") {
+        payload = new Date().toISOString();
+      } else if (definition.format === "uuid") {
+        payload = "00000000-0000-0000-0000-000000000000";
+      } else if (definition.format === "byte") {
+        payload = "string";
+      } else if (definition.enum) {
+        payload = definition.enum[0];
+      } else {
+        payload = "string";
+      }
+      break;
+    case "integer":
+      payload = 0;
+      break;
+    case "boolean":
+      payload = false;
+      break;
+    case "array":
+      payload = [generateResponsePayload(definition.items)];
+      break;
+  }
+  return payload;
 };
 
 const copyOpenApi = async (
