@@ -5,7 +5,7 @@
     "description": "Azure Communication Room Service",
     "version": "2023-06-14"
   },
-  "host": ["localhost:3000"],
+  "host": "localhost:3000",
   "schemes": [
     "http"
   ],
