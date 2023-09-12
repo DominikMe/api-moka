@@ -6,23 +6,15 @@
     "version": "2023-06-14"
   },
   "host": "localhost:3000",
-  "schemes": [
-    "http"
-  ],
+  "schemes": ["http"],
   "paths": {
     "/rooms": {
       "post": {
-        "tags": [
-          "Rooms"
-        ],
+        "tags": ["Rooms"],
         "summary": "Creates a new room.",
         "operationId": "Rooms_Create",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "$ref": "#/parameters/ApiVersionParameter"
@@ -70,16 +62,13 @@
               }
             }
           }
-        }      },
+        }
+      },
       "get": {
-        "tags": [
-          "Rooms"
-        ],
+        "tags": ["Rooms"],
         "summary": "Retrieves all created rooms.",
         "operationId": "Rooms_List",
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "$ref": "#/parameters/ApiVersionParameter"
@@ -113,14 +102,10 @@
     },
     "/rooms/{roomId}": {
       "get": {
-        "tags": [
-          "Rooms"
-        ],
+        "tags": ["Rooms"],
         "summary": "Retrieves an existing room by id.",
         "operationId": "Rooms_Get",
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "path",
@@ -152,19 +137,14 @@
               }
             }
           }
-        }      },
+        }
+      },
       "patch": {
-        "tags": [
-          "Rooms"
-        ],
+        "tags": ["Rooms"],
         "summary": "Update a room with given changes.",
         "operationId": "Rooms_Update",
-        "consumes": [
-          "application/merge-patch+json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/merge-patch+json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "path",
@@ -205,16 +185,13 @@
               }
             }
           }
-        }      },
+        }
+      },
       "delete": {
-        "tags": [
-          "Rooms"
-        ],
+        "tags": ["Rooms"],
         "summary": "Delete a room.",
         "operationId": "Rooms_Delete",
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "path",
@@ -243,18 +220,15 @@
               }
             }
           }
-        }      }
+        }
+      }
     },
     "/rooms/{roomId}/participants": {
       "get": {
-        "tags": [
-          "Participants"
-        ],
+        "tags": ["Participants"],
         "summary": "Get participants in a room.",
         "operationId": "Participants_List",
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "path",
@@ -293,17 +267,11 @@
         }
       },
       "patch": {
-        "tags": [
-          "Participants"
-        ],
+        "tags": ["Participants"],
         "summary": "Update participants in a room.",
         "operationId": "Participants_Update",
-        "consumes": [
-          "application/merge-patch+json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/merge-patch+json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "path",
@@ -344,16 +312,15 @@
               }
             }
           }
-        }      }
+        }
+      }
     }
   },
   "definitions": {
     "CommunicationErrorResponse": {
       "description": "The Communication Services error.",
       "type": "object",
-      "required": [
-        "error"
-      ],
+      "required": ["error"],
       "properties": {
         "error": {
           "description": "The Communication Services error.",
@@ -364,10 +331,7 @@
     "CommunicationError": {
       "description": "The Communication Services error.",
       "type": "object",
-      "required": [
-        "code",
-        "message"
-      ],
+      "required": ["code", "message"],
       "properties": {
         "code": {
           "type": "string",
@@ -433,9 +397,7 @@
       }
     },
     "ParticipantProperties": {
-      "required": [
-        "role"
-      ],
+      "required": ["role"],
       "type": "object",
       "properties": {
         "role": {
@@ -445,9 +407,7 @@
     },
     "ParticipantsCollection": {
       "description": "A collection of participants in a room.",
-      "required": [
-        "value"
-      ],
+      "required": ["value"],
       "type": "object",
       "properties": {
         "value": {
@@ -465,11 +425,7 @@
     },
     "Role": {
       "description": "The role of a room participant. The default value is Attendee.",
-      "enum": [
-        "Presenter",
-        "Attendee",
-        "Consumer"
-      ],
+      "enum": ["Presenter", "Attendee", "Consumer"],
       "type": "string",
       "x-ms-enum": {
         "name": "Role",
@@ -479,12 +435,7 @@
     "RoomModel": {
       "description": "The meeting room.",
       "type": "object",
-      "required": [
-        "createdAt",
-        "id",
-        "validFrom",
-        "validUntil"
-      ],
+      "required": ["createdAt", "id", "validFrom", "validUntil"],
       "properties": {
         "id": {
           "description": "Unique identifier of a room. This id is server generated.",
@@ -513,10 +464,7 @@
     },
     "RoomParticipant": {
       "description": "A participant of the room.",
-      "required": [
-        "rawId",
-        "role"
-      ],
+      "required": ["rawId", "role"],
       "type": "object",
       "properties": {
         "rawId": {
@@ -530,9 +478,7 @@
     },
     "RoomsCollection": {
       "description": "A collection of rooms.",
-      "required": [
-        "value"
-      ],
+      "required": ["value"],
       "type": "object",
       "properties": {
         "value": {

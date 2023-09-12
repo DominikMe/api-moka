@@ -6,6 +6,7 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p .",
+    "format": "prettier . --write",
     "generate": "node dist/index.js",
     "emulate": "npm run generate && start cmd.exe /k \"cd c:/Code/api-moka/output && npm i && code . && npm run build && npm run start\"",
     "test": "test"
@@ -29,6 +30,7 @@
   "homepage": "https://github.com/DominikMe/api-moka#readme",
   "devDependencies": {
     "@types/node": "^20.6.0",
+    "prettier": "3.0.3",
     "rimraf": "^5.0.1"
   },
   "dependencies": {
