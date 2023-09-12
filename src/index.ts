@@ -84,7 +84,8 @@ const generateRoutes = (openApi: OpenApi): string[] => {
 };
 
 const generateRoute = (path: string, method: string, route: any): string => {
-  return `app.${method}("${path}", (req, res) => {
+  const expressPath = path.replaceAll("{", ":").replaceAll("}", "");
+  return `app.${method}("${expressPath}", (req, res) => {
         res.send({ msg: "${Buffer.from(
           Math.random().toString().substring(2, 6),
         ).toString("base64")}"});
@@ -96,13 +97,14 @@ const copyOpenApi = async (
   service: string,
   spec: string,
 ) => {
-  let openApi: any;
+  let text = "";
   if (spec.startsWith("http")) {
-    openApi = await (await fetch(spec)).json();
+    let response = await fetch(spec);
+    text = await response.text();
+  } else {
+    text = await fs.readFile(spec, { encoding: "utf-8" });
   }
-  else {
-    openApi = JSON.parse(await fs.readFile(spec, { encoding: "utf-8" }));
-  }
+  const openApi = JSON.parse(hackToMakeSwaggerEditorWork(text));
   openApi.schemes = ["http"];
   openApi.host = "localhost:3000";
   const content = JSON.stringify(openApi, null, 2);
@@ -111,4 +113,12 @@ const copyOpenApi = async (
   });
 };
 
-await generateServiceMocks("output", ["test/communicationservicesrooms.json", "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/communication/data-plane/Identity/stable/2023-08-01/CommunicationIdentity.json"]);
+const hackToMakeSwaggerEditorWork = (openApi: string) => {
+  // replace unresolved external refs with object type
+  return openApi.replaceAll(/\s*"\$ref": "[^#][^\s]+/g, '"type": "object"');
+};
+
+await generateServiceMocks("output", [
+  "test/communicationservicesrooms.json",
+  "https://raw.githubusercontent.com/Azure/azure-rest-api-specs/main/specification/communication/data-plane/Identity/stable/2023-08-01/CommunicationIdentity.json",
+]);
