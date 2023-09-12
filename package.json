@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "build": "tsc -p .",
-    "start": "node dist/index.js",
+    "generate": "node dist/index.js",
+    "emulate": "npm run generate && start cmd.exe /k \"cd c:/Code/api-moka/output && npm i && code . && npm run build && npm run start\"",
     "test": "test"
   },
   "repository": {

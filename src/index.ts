@@ -3,10 +3,9 @@ import * as rimraf from "rimraf";
 
 const generateServiceMocks = async (outputPath: string, services: string[]) => {
     await rimraf.rimraf(outputPath);
-    await fs.mkdir(outputPath);
-    await fs.mkdir(`${outputPath}/apis`);
+    await fs.mkdir(`${outputPath}/src`, {recursive: true});
     for (const service of services) {
-        await fs.mkdir(`${outputPath}/apis/${service.toLowerCase()}`);
+        await fs.mkdir(`${outputPath}/src/${service.toLowerCase()}`);
         await generateApi(outputPath, service);
     }
     await generateApp(outputPath, services);
@@ -19,7 +18,7 @@ const generateImports = (services: string[]) => {
     let mapCalls = [];
     for (const service of services) {
         const mapFunction = `map${uppercaseFirstLetter(service)}`;
-        imports.push(`import { ${mapFunction} } from "apis/${service}/api";`);
+        imports.push(`import { ${mapFunction} } from "./${service}/api";`);
         mapCalls.push(`${mapFunction}(app);`);
     };
     return {
@@ -36,7 +35,7 @@ const generateApp = async (outputPath: string, services: string[]) => {
     let content = template
         .replaceAll("// %IMPORT_APIS%", imports.join("\n"))
         .replaceAll("// %MAP_APIS%", mapCalls.join("\n"));
-    await fs.writeFile(`${outputPath}/app.ts`, content, {encoding: 'utf-8'});
+    await fs.writeFile(`${outputPath}/src/app.ts`, content, {encoding: 'utf-8'});
 };
 
 const generateApi = async (outputPath: string, service: string) => {
@@ -47,7 +46,7 @@ const generateApi = async (outputPath: string, service: string) => {
         ${generateRoutes()}
     };
     `;
-    await fs.writeFile(`${outputPath}/apis/${service.toLowerCase()}/api.ts`, content, { encoding: 'utf-8' });
+    await fs.writeFile(`${outputPath}/src/${service.toLowerCase()}/api.ts`, content, { encoding: 'utf-8' });
 };
 
 const generateRoutes = () => "app.post(...);";
