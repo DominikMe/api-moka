@@ -9,6 +9,8 @@ It's useful to mock out dependencies for speeding up development, especially in 
 ### Prerequisites
 * VS Code
 * OpenApi VS Code extension that can preview OpenAPI with the Swagger Editor
+* Node 18
+* TypeScript installed globally
 
 ### Generate the emulator
 
@@ -21,7 +23,6 @@ npm run build
 Run it:
 ```
 npm run emulate
-
 ```
 
 (cli arguments will be coming, for now it uses two hard-coded specifications out of the box)
@@ -52,3 +53,5 @@ While the generated emulator is running:
 * You can see the returned response from the emulator!
 * To change the returned response, edit the route in `api.ts` and save the file
 * Wait until hot-reload did its thing and execute the request again, you will see your changes in the response.
+
+![VS Code screenshot](vscode.png)
