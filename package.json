@@ -11,6 +11,13 @@
     "emulate": "npm run generate && start cmd.exe /k \"cd c:/Code/api-moka/output && npm i && code . && npm run build && npm run start\"",
     "test": "test"
   },
+  "bin": {
+    "api-moka": "./dist/index.js"
+  },
+  "files": [
+    "dist/*.js",
+    "*.png"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DominikMe/api-moka.git"
@@ -34,6 +41,7 @@
     "rimraf": "^5.0.1"
   },
   "dependencies": {
-    "@apidevtools/swagger-parser": "^10.1.0"
+    "@apidevtools/swagger-parser": "^10.1.0",
+    "commander": "^11.0.0"
   }
 }
