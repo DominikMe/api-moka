@@ -1,6 +1,11 @@
 import * as fs from "fs/promises";
 import * as rimraf from "rimraf";
 import SwaggerParser from "@apidevtools/swagger-parser";
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 type OpenApi = Awaited<ReturnType<typeof SwaggerParser.validate>>;
 
@@ -20,8 +25,8 @@ export const generateServiceMocks = async (
     await copyOpenApi(outputPath, service, spec);
   }
   await generateApp(outputPath, services);
-  await fs.copyFile("templates/package.json", `${outputPath}/package.json`);
-  await fs.copyFile("templates/tsconfig.json", `${outputPath}/tsconfig.json`);
+  await fs.copyFile(`${__dirname}/../templates/package.json`, `${outputPath}/package.json`);
+  await fs.copyFile(`${__dirname}/../templates/tsconfig.json`, `${outputPath}/tsconfig.json`);
 };
 
 const generateImports = (services: string[]) => {
@@ -44,7 +49,7 @@ const uppercaseFirstLetter = (s: string) =>
   `${s.toUpperCase()[0]}${s.substring(1)}`;
 
 const generateApp = async (outputPath: string, services: string[]) => {
-  const template = await fs.readFile("templates/src/app.ts", {
+  const template = await fs.readFile(`${__dirname}/../templates/src/app.ts`, {
     encoding: "utf-8",
   });
   const { imports, mapCalls } = generateImports(services);
@@ -114,10 +119,29 @@ const generateResponse = (route: any) => {
   };
 };
 
+const getDefinitionKey = (definition: any) => {
+  return `${definition.type}#${Object.keys(definition.properties ?? {})}#${
+    definition.description
+  }`;
+};
+
+const responseCache = new Map<string, any>();
+// needed for breaking circular dependencies
+const referencePath = [] as string[];
+
 const generateResponsePayload = (definition: any) => {
+  const key = getDefinitionKey(definition);
+  if (responseCache.has(key)) {
+    return responseCache.get(key);
+  }
   let payload = {} as any;
   switch (definition.type) {
     case "object":
+      if (referencePath.includes(key)) {
+        // found circular reference
+        return null;
+      }
+      referencePath.push(key);
       for (let prop in definition.properties) {
         payload[prop] = generateResponsePayload(definition.properties[prop]);
       }
@@ -145,6 +169,7 @@ const generateResponsePayload = (definition: any) => {
       payload = [generateResponsePayload(definition.items)];
       break;
   }
+  responseCache.set(key, payload);
   return payload;
 };
 
